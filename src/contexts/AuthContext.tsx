@@ -88,6 +88,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           needsOnboarding: false,
         });
       }
+    }).catch(() => {
+      // Si Supabase echoue, on affiche quand meme le login
+      setState({
+        session: null,
+        user: null,
+        profile: null,
+        isLoading: false,
+        needsOnboarding: false,
+      });
     });
 
     // Ecouter les changements
