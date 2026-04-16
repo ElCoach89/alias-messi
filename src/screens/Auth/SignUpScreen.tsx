@@ -1,5 +1,5 @@
 // ============================================================
-// El Coach — Sign Up Screen
+// El Coach — Sign Up Screen (brutalist design)
 // ============================================================
 
 import React, { useState } from 'react';
@@ -14,8 +14,7 @@ import {
   Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons } from '@expo/vector-icons';
-import { Colors, Spacing, FontSize, BorderRadius } from '../../constants/theme';
+import { Colors, Spacing, FontSize } from '../../constants/theme';
 import Button from '../../components/Button';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -24,7 +23,7 @@ interface Props {
 }
 
 export default function SignUpScreen({ onSwitchToLogin }: Props) {
-  const { signUp } = useAuth();
+  const { signUp, signIn } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -49,16 +48,21 @@ export default function SignUpScreen({ onSwitchToLogin }: Props) {
 
     setLoading(true);
     const { error } = await signUp(email.trim(), password);
-    setLoading(false);
 
     if (error) {
+      setLoading(false);
       Alert.alert('Inscription impossible', error);
     } else {
-      Alert.alert(
-        'Compte cree !',
-        'Verifie ta boite mail pour confirmer ton adresse, puis connecte-toi.',
-        [{ text: 'OK', onPress: onSwitchToLogin }],
-      );
+      // Auto-login apres inscription (si confirm email desactive)
+      const loginResult = await signIn(email.trim(), password);
+      setLoading(false);
+      if (loginResult.error) {
+        Alert.alert(
+          'Compte cree',
+          'Verifie ta boite mail puis connecte-toi.',
+          [{ text: 'OK', onPress: onSwitchToLogin }],
+        );
+      }
     }
   }
 
@@ -70,18 +74,18 @@ export default function SignUpScreen({ onSwitchToLogin }: Props) {
       >
         {/* Header */}
         <View style={styles.header}>
-          <Ionicons name="fitness" size={48} color={Colors.primary} />
-          <Text style={styles.title}>Creer un compte</Text>
-          <Text style={styles.subtitle}>7 jours d'essai gratuit</Text>
+          <Text style={styles.sectionLabel}>[ 01 ] INSCRIPTION</Text>
+          <Text style={styles.title}>CREER UN COMPTE</Text>
+          <Text style={styles.subtitle}>7 JOURS D'ESSAI GRATUIT</Text>
         </View>
 
         {/* Formulaire */}
         <View style={styles.form}>
+          <Text style={styles.fieldLabel}>EMAIL</Text>
           <View style={styles.inputContainer}>
-            <Ionicons name="mail-outline" size={20} color={Colors.textMuted} style={styles.inputIcon} />
             <TextInput
               style={styles.input}
-              placeholder="Email"
+              placeholder="ton@email.com"
               placeholderTextColor={Colors.textMuted}
               value={email}
               onChangeText={setEmail}
@@ -91,11 +95,11 @@ export default function SignUpScreen({ onSwitchToLogin }: Props) {
             />
           </View>
 
+          <Text style={styles.fieldLabel}>MOT DE PASSE</Text>
           <View style={styles.inputContainer}>
-            <Ionicons name="lock-closed-outline" size={20} color={Colors.textMuted} style={styles.inputIcon} />
             <TextInput
               style={styles.input}
-              placeholder="Mot de passe (6+ caracteres)"
+              placeholder="6+ caracteres"
               placeholderTextColor={Colors.textMuted}
               value={password}
               onChangeText={setPassword}
@@ -103,19 +107,15 @@ export default function SignUpScreen({ onSwitchToLogin }: Props) {
               autoComplete="new-password"
             />
             <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeButton}>
-              <Ionicons
-                name={showPassword ? 'eye-off-outline' : 'eye-outline'}
-                size={20}
-                color={Colors.textMuted}
-              />
+              <Text style={styles.eyeText}>{showPassword ? 'CACHER' : 'VOIR'}</Text>
             </TouchableOpacity>
           </View>
 
+          <Text style={styles.fieldLabel}>CONFIRMER</Text>
           <View style={styles.inputContainer}>
-            <Ionicons name="lock-closed-outline" size={20} color={Colors.textMuted} style={styles.inputIcon} />
             <TextInput
               style={styles.input}
-              placeholder="Confirmer le mot de passe"
+              placeholder="Meme mot de passe"
               placeholderTextColor={Colors.textMuted}
               value={confirmPassword}
               onChangeText={setConfirmPassword}
@@ -124,6 +124,7 @@ export default function SignUpScreen({ onSwitchToLogin }: Props) {
             />
           </View>
 
+          <View style={{ height: Spacing.sm }} />
           <Button title="S'inscrire" onPress={handleSignUp} loading={loading} size="lg" />
         </View>
 
@@ -131,7 +132,7 @@ export default function SignUpScreen({ onSwitchToLogin }: Props) {
         <View style={styles.footer}>
           <Text style={styles.footerText}>Deja un compte ?</Text>
           <TouchableOpacity onPress={onSwitchToLogin}>
-            <Text style={styles.footerLink}> Se connecter</Text>
+            <Text style={styles.footerLink}> SE CONNECTER</Text>
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
@@ -150,44 +151,62 @@ const styles = StyleSheet.create({
     padding: Spacing.lg,
   },
   header: {
-    alignItems: 'center',
     marginBottom: Spacing.xxl,
+  },
+  sectionLabel: {
+    fontFamily: 'monospace',
+    fontSize: FontSize.xs,
+    color: Colors.mute,
+    letterSpacing: 2,
+    marginBottom: Spacing.sm,
   },
   title: {
     fontSize: FontSize.xxl,
     fontWeight: '800',
     color: Colors.text,
-    marginTop: Spacing.sm,
+    letterSpacing: 2,
   },
   subtitle: {
-    fontSize: FontSize.base,
+    fontFamily: 'monospace',
+    fontSize: FontSize.sm,
     color: Colors.success,
-    fontWeight: '600',
+    letterSpacing: 2,
     marginTop: Spacing.xs,
   },
   form: {
-    gap: Spacing.md,
+    gap: Spacing.xs,
+  },
+  fieldLabel: {
+    fontFamily: 'monospace',
+    fontSize: FontSize.xs,
+    color: Colors.mute,
+    letterSpacing: 2,
+    marginTop: Spacing.md,
+    marginBottom: Spacing.xs,
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.surface,
-    borderRadius: BorderRadius.md,
+    backgroundColor: Colors.ash,
     borderWidth: 1,
-    borderColor: Colors.border,
+    borderColor: Colors.line,
     paddingHorizontal: Spacing.md,
-  },
-  inputIcon: {
-    marginRight: Spacing.sm,
   },
   input: {
     flex: 1,
     color: Colors.text,
     fontSize: FontSize.base,
+    fontFamily: 'monospace',
     paddingVertical: Spacing.md,
   },
   eyeButton: {
     padding: Spacing.sm,
+  },
+  eyeText: {
+    fontFamily: 'monospace',
+    fontSize: FontSize.xs,
+    color: Colors.mute,
+    letterSpacing: 1,
   },
   footer: {
     flexDirection: 'row',
@@ -199,8 +218,10 @@ const styles = StyleSheet.create({
     fontSize: FontSize.md,
   },
   footerLink: {
-    color: Colors.primary,
+    color: Colors.white,
     fontSize: FontSize.md,
     fontWeight: '700',
+    fontFamily: 'monospace',
+    letterSpacing: 1,
   },
 });

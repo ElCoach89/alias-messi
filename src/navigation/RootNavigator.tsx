@@ -97,15 +97,21 @@ export default function RootNavigator() {
       screenOptions={({ route }) => ({
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: Colors.surface,
-          borderTopColor: Colors.border,
-          borderTopWidth: 0.5,
+          backgroundColor: Colors.black,
+          borderTopColor: Colors.line,
+          borderTopWidth: 1,
           height: 85,
           paddingBottom: 28,
           paddingTop: 8,
         },
-        tabBarActiveTintColor: Colors.primary,
-        tabBarInactiveTintColor: Colors.textMuted,
+        tabBarActiveTintColor: Colors.white,
+        tabBarInactiveTintColor: Colors.mute,
+        tabBarLabelStyle: {
+          fontFamily: 'monospace',
+          fontSize: 9,
+          letterSpacing: 1,
+          textTransform: 'uppercase',
+        },
         tabBarIcon: ({ focused, color, size }) => {
           const icons = TAB_ICONS[route.name];
           const iconName = focused ? icons.active : icons.inactive;

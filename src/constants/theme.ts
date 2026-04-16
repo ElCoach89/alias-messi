@@ -1,40 +1,49 @@
 // ============================================================
 // El Coach — Design System
+// Aligne sur le design web (dark brutalist/minimal)
 // ============================================================
 
 export const Colors = {
-  // Primary
-  primary: '#FF6B35',
-  primaryDark: '#E85A2A',
-  primaryLight: '#FF8A5C',
+  // Core palette
+  ink: '#000000',
+  paper: '#ffffff',
+  ash: '#0a0a0a',
+  smoke: '#161616',
+  line: '#1f1f1f',
+  mute: '#8a8a8a',
+
+  // Semantic
+  primary: '#ffffff',
+  primaryDark: '#e0e0e0',
+  primaryLight: '#ffffff',
 
   // Backgrounds
-  background: '#0D0D0D',
-  surface: '#1A1A1A',
-  surfaceLight: '#2A2A2A',
-  card: '#1E1E1E',
+  background: '#000000',
+  surface: '#0a0a0a',
+  surfaceLight: '#161616',
+  card: '#0a0a0a',
 
   // Text
-  text: '#FFFFFF',
-  textSecondary: '#A0A0A0',
-  textMuted: '#666666',
+  text: '#ffffff',
+  textSecondary: '#8a8a8a',
+  textMuted: '#555555',
 
-  // Accent
-  success: '#4CAF50',
-  warning: '#FFC107',
-  error: '#F44336',
-  info: '#2196F3',
+  // Status
+  success: '#22c55e',
+  warning: '#eab308',
+  error: '#ef4444',
+  info: '#8a8a8a',
 
-  // Classification colors
-  performer: '#4CAF50',
-  stable: '#2196F3',
-  fatigued: '#FFC107',
-  struggling: '#F44336',
+  // Classification
+  performer: '#22c55e',
+  stable: '#ffffff',
+  fatigued: '#eab308',
+  struggling: '#ef4444',
 
   // Misc
-  border: '#333333',
-  overlay: 'rgba(0,0,0,0.7)',
-  white: '#FFFFFF',
+  border: '#1f1f1f',
+  overlay: 'rgba(0,0,0,0.8)',
+  white: '#ffffff',
   black: '#000000',
 } as const;
 
@@ -49,9 +58,9 @@ export const Spacing = {
 
 export const FontSize = {
   xs: 10,
-  sm: 12,
-  md: 14,
-  base: 16,
+  sm: 11,
+  md: 13,
+  base: 15,
   lg: 18,
   xl: 22,
   xxl: 28,
@@ -59,9 +68,9 @@ export const FontSize = {
 } as const;
 
 export const BorderRadius = {
-  sm: 6,
-  md: 12,
-  lg: 16,
-  xl: 24,
+  sm: 0,
+  md: 0,
+  lg: 0,
+  xl: 0,
   full: 9999,
 } as const;

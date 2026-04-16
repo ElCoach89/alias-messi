@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { Colors, Spacing, FontSize, BorderRadius } from '../constants/theme';
+import { Colors, Spacing, FontSize } from '../constants/theme';
 
 interface SegmentedControlProps<T extends string> {
   label: string;
@@ -17,7 +17,7 @@ export default function SegmentedControl<T extends string>({
 }: SegmentedControlProps<T>) {
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>{label}</Text>
+      <Text style={styles.label}>{label.toUpperCase()}</Text>
       <View style={styles.row}>
         {options.map((opt) => (
           <TouchableOpacity
@@ -26,7 +26,7 @@ export default function SegmentedControl<T extends string>({
             style={[styles.segment, opt.value === selected && styles.segmentActive]}
           >
             <Text style={[styles.segmentText, opt.value === selected && styles.segmentTextActive]}>
-              {opt.label}
+              {opt.label.toUpperCase()}
             </Text>
           </TouchableOpacity>
         ))}
@@ -37,33 +37,39 @@ export default function SegmentedControl<T extends string>({
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: Spacing.md,
+    marginBottom: Spacing.lg,
   },
   label: {
-    color: Colors.textSecondary,
-    fontSize: FontSize.md,
+    fontFamily: 'monospace',
+    color: Colors.mute,
+    fontSize: FontSize.xs,
+    letterSpacing: 2,
     marginBottom: Spacing.sm,
   },
   row: {
     flexDirection: 'row',
-    gap: Spacing.sm,
+    gap: 1, // hairline gap
   },
   segment: {
     flex: 1,
-    paddingVertical: Spacing.sm,
-    borderRadius: BorderRadius.sm,
-    backgroundColor: Colors.surfaceLight,
+    paddingVertical: Spacing.sm + 2,
+    backgroundColor: Colors.ash,
+    borderWidth: 1,
+    borderColor: Colors.line,
     alignItems: 'center',
   },
   segmentActive: {
-    backgroundColor: Colors.primary,
+    backgroundColor: Colors.white,
+    borderColor: Colors.white,
   },
   segmentText: {
-    color: Colors.textMuted,
-    fontSize: FontSize.sm,
+    color: Colors.mute,
+    fontSize: FontSize.xs,
+    fontFamily: 'monospace',
     fontWeight: '600',
+    letterSpacing: 1,
   },
   segmentTextActive: {
-    color: Colors.white,
+    color: Colors.black,
   },
 });

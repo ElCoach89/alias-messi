@@ -1,6 +1,6 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, ViewStyle, ActivityIndicator } from 'react-native';
-import { Colors, BorderRadius, Spacing, FontSize } from '../constants/theme';
+import { Colors, Spacing, FontSize } from '../constants/theme';
 
 interface ButtonProps {
   title: string;
@@ -21,29 +21,24 @@ export default function Button({
   loading = false,
   style,
 }: ButtonProps) {
-  const bgColor =
-    variant === 'primary'
-      ? Colors.primary
-      : variant === 'secondary'
-        ? Colors.surfaceLight
-        : 'transparent';
-
-  const textColor = variant === 'ghost' ? Colors.primary : Colors.white;
-  const height = size === 'sm' ? 36 : size === 'lg' ? 56 : 46;
-  const fontSize = size === 'sm' ? FontSize.sm : size === 'lg' ? FontSize.lg : FontSize.base;
+  const isPrimary = variant === 'primary';
+  const isGhost = variant === 'ghost';
+  const bgColor = isPrimary ? Colors.white : isGhost ? 'transparent' : Colors.smoke;
+  const textColor = isPrimary ? Colors.black : Colors.white;
+  const height = size === 'sm' ? 36 : size === 'lg' ? 52 : 44;
 
   return (
     <TouchableOpacity
       onPress={onPress}
       disabled={disabled || loading}
-      activeOpacity={0.7}
+      activeOpacity={0.8}
       style={[
         styles.button,
         {
-          backgroundColor: disabled ? Colors.surfaceLight : bgColor,
+          backgroundColor: disabled ? Colors.smoke : bgColor,
           height,
-          borderWidth: variant === 'ghost' ? 1 : 0,
-          borderColor: Colors.primary,
+          borderWidth: isGhost ? 1 : 0,
+          borderColor: Colors.line,
         },
         style,
       ]}
@@ -51,8 +46,13 @@ export default function Button({
       {loading ? (
         <ActivityIndicator color={textColor} />
       ) : (
-        <Text style={[styles.text, { color: disabled ? Colors.textMuted : textColor, fontSize }]}>
-          {title}
+        <Text
+          style={[
+            styles.text,
+            { color: disabled ? Colors.textMuted : textColor },
+          ]}
+        >
+          {title.toUpperCase()}
         </Text>
       )}
     </TouchableOpacity>
@@ -61,12 +61,14 @@ export default function Button({
 
 const styles = StyleSheet.create({
   button: {
-    borderRadius: BorderRadius.md,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: Spacing.lg,
   },
   text: {
-    fontWeight: '700',
+    fontFamily: 'monospace',
+    fontWeight: '600',
+    fontSize: FontSize.sm,
+    letterSpacing: 1.5,
   },
 });

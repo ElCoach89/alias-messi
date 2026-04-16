@@ -1,5 +1,5 @@
 // ============================================================
-// El Coach — Login Screen
+// El Coach — Login Screen (brutalist design)
 // ============================================================
 
 import React, { useState } from 'react';
@@ -14,8 +14,7 @@ import {
   Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons } from '@expo/vector-icons';
-import { Colors, Spacing, FontSize, BorderRadius } from '../../constants/theme';
+import { Colors, Spacing, FontSize } from '../../constants/theme';
 import Button from '../../components/Button';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -51,20 +50,22 @@ export default function LoginScreen({ onSwitchToSignUp }: Props) {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.inner}
       >
-        {/* Logo / Titre */}
+        {/* Logo */}
         <View style={styles.header}>
-          <Ionicons name="fitness" size={48} color={Colors.primary} />
-          <Text style={styles.title}>El Coach</Text>
-          <Text style={styles.subtitle}>Ton coach intelligent</Text>
+          <View style={styles.logoMark}>
+            <View style={styles.logoInner} />
+          </View>
+          <Text style={styles.title}>EL COACH</Text>
+          <Text style={styles.subtitle}>SYSTEME D'ENTRAINEMENT</Text>
         </View>
 
         {/* Formulaire */}
         <View style={styles.form}>
+          <Text style={styles.fieldLabel}>EMAIL</Text>
           <View style={styles.inputContainer}>
-            <Ionicons name="mail-outline" size={20} color={Colors.textMuted} style={styles.inputIcon} />
             <TextInput
               style={styles.input}
-              placeholder="Email"
+              placeholder="ton@email.com"
               placeholderTextColor={Colors.textMuted}
               value={email}
               onChangeText={setEmail}
@@ -74,11 +75,11 @@ export default function LoginScreen({ onSwitchToSignUp }: Props) {
             />
           </View>
 
+          <Text style={styles.fieldLabel}>MOT DE PASSE</Text>
           <View style={styles.inputContainer}>
-            <Ionicons name="lock-closed-outline" size={20} color={Colors.textMuted} style={styles.inputIcon} />
             <TextInput
               style={styles.input}
-              placeholder="Mot de passe"
+              placeholder="6+ caracteres"
               placeholderTextColor={Colors.textMuted}
               value={password}
               onChangeText={setPassword}
@@ -86,11 +87,7 @@ export default function LoginScreen({ onSwitchToSignUp }: Props) {
               autoComplete="password"
             />
             <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeButton}>
-              <Ionicons
-                name={showPassword ? 'eye-off-outline' : 'eye-outline'}
-                size={20}
-                color={Colors.textMuted}
-              />
+              <Text style={styles.eyeText}>{showPassword ? 'CACHER' : 'VOIR'}</Text>
             </TouchableOpacity>
           </View>
 
@@ -101,9 +98,13 @@ export default function LoginScreen({ onSwitchToSignUp }: Props) {
         <View style={styles.footer}>
           <Text style={styles.footerText}>Pas encore de compte ?</Text>
           <TouchableOpacity onPress={onSwitchToSignUp}>
-            <Text style={styles.footerLink}> Creer un compte</Text>
+            <Text style={styles.footerLink}> CREER UN COMPTE</Text>
           </TouchableOpacity>
         </View>
+
+        {/* Separator */}
+        <View style={styles.separator} />
+        <Text style={styles.version}>V1 / PROD</Text>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -123,40 +124,69 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: Spacing.xxl,
   },
+  logoMark: {
+    width: 48,
+    height: 48,
+    borderWidth: 2,
+    borderColor: Colors.white,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: Spacing.md,
+  },
+  logoInner: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: Colors.white,
+  },
   title: {
-    fontSize: FontSize.hero,
+    fontSize: FontSize.xxl,
     fontWeight: '800',
     color: Colors.text,
-    marginTop: Spacing.sm,
+    letterSpacing: 6,
+    fontFamily: 'monospace',
   },
   subtitle: {
-    fontSize: FontSize.base,
-    color: Colors.textSecondary,
-    marginTop: Spacing.xs,
+    fontFamily: 'monospace',
+    fontSize: FontSize.xs,
+    color: Colors.mute,
+    letterSpacing: 3,
+    marginTop: Spacing.sm,
   },
   form: {
-    gap: Spacing.md,
+    gap: Spacing.sm,
+  },
+  fieldLabel: {
+    fontFamily: 'monospace',
+    fontSize: FontSize.xs,
+    color: Colors.mute,
+    letterSpacing: 2,
+    marginTop: Spacing.sm,
+    marginBottom: Spacing.xs,
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.surface,
-    borderRadius: BorderRadius.md,
+    backgroundColor: Colors.ash,
     borderWidth: 1,
-    borderColor: Colors.border,
+    borderColor: Colors.line,
     paddingHorizontal: Spacing.md,
-  },
-  inputIcon: {
-    marginRight: Spacing.sm,
   },
   input: {
     flex: 1,
     color: Colors.text,
     fontSize: FontSize.base,
+    fontFamily: 'monospace',
     paddingVertical: Spacing.md,
   },
   eyeButton: {
     padding: Spacing.sm,
+  },
+  eyeText: {
+    fontFamily: 'monospace',
+    fontSize: FontSize.xs,
+    color: Colors.mute,
+    letterSpacing: 1,
   },
   footer: {
     flexDirection: 'row',
@@ -168,8 +198,23 @@ const styles = StyleSheet.create({
     fontSize: FontSize.md,
   },
   footerLink: {
-    color: Colors.primary,
+    color: Colors.white,
     fontSize: FontSize.md,
     fontWeight: '700',
+    fontFamily: 'monospace',
+    letterSpacing: 1,
+  },
+  separator: {
+    height: 1,
+    backgroundColor: Colors.line,
+    marginTop: Spacing.xxl,
+    marginBottom: Spacing.md,
+  },
+  version: {
+    fontFamily: 'monospace',
+    fontSize: FontSize.xs,
+    color: Colors.textMuted,
+    letterSpacing: 2,
+    textAlign: 'center',
   },
 });

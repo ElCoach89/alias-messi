@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { Colors, Spacing, FontSize, BorderRadius } from '../constants/theme';
+import { Colors, Spacing, FontSize } from '../constants/theme';
 
 interface FeedbackSliderProps {
   label: string;
@@ -22,7 +22,7 @@ export default function FeedbackSlider({
   return (
     <View style={styles.container}>
       <Text style={styles.label}>
-        {label}: <Text style={styles.value}>{value}</Text>
+        {label.toUpperCase()}  <Text style={styles.value}>{value}</Text>
       </Text>
       <View style={styles.row}>
         {values.map((v) => (
@@ -41,15 +41,17 @@ export default function FeedbackSlider({
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: Spacing.md,
+    marginBottom: Spacing.lg,
   },
   label: {
-    color: Colors.textSecondary,
-    fontSize: FontSize.md,
+    fontFamily: 'monospace',
+    color: Colors.mute,
+    fontSize: FontSize.xs,
+    letterSpacing: 2,
     marginBottom: Spacing.sm,
   },
   value: {
-    color: Colors.primary,
+    color: Colors.white,
     fontWeight: '700',
   },
   row: {
@@ -59,20 +61,23 @@ const styles = StyleSheet.create({
   dot: {
     width: 30,
     height: 30,
-    borderRadius: BorderRadius.full,
-    backgroundColor: Colors.surfaceLight,
+    borderWidth: 1,
+    borderColor: Colors.line,
+    backgroundColor: Colors.ash,
     alignItems: 'center',
     justifyContent: 'center',
   },
   dotActive: {
-    backgroundColor: Colors.primary,
+    backgroundColor: Colors.white,
+    borderColor: Colors.white,
   },
   dotText: {
     color: Colors.textMuted,
     fontSize: FontSize.xs,
+    fontFamily: 'monospace',
     fontWeight: '600',
   },
   dotTextActive: {
-    color: Colors.white,
+    color: Colors.black,
   },
 });
