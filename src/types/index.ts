@@ -4,7 +4,8 @@
 
 // --- User & Profile ---
 
-export type TrainingModule = 'crossfit' | 'hyrox' | 'strength' | 'home';
+export type TrainingModule = 'crossfit' | 'hyrox' | 'strength' | 'home' | 'hybrid';
+export type CooldownActivity = 'walk' | 'run' | 'boxe' | 'swim' | 'rest_complete';
 export type SubscriptionTier = 'free_trial' | 'base' | 'premium';
 export type UserClassification = 'performer' | 'stable' | 'fatigued' | 'struggling';
 
@@ -56,23 +57,25 @@ export interface ProgramWeek {
   intensity_modifier: number; // 0.8 to 1.2
 }
 
-export type SessionType = 'crossfit' | 'hyrox' | 'strength' | 'home' | 'mixed';
+export type SessionType = 'crossfit' | 'hyrox' | 'strength' | 'home' | 'mixed' | 'hybrid' | 'cooldown';
 export type FinisherType = 'core' | 'cardio' | 'mixed' | 'none';
 
 export interface Session {
   id: string;
   week_id: string;
-  day_number: number; // 1-6
+  day_number: number; // 1-7 (day 7 = adaptive cooldown for Hybride)
   session_type: SessionType;
   name: string;
   description?: string;
   estimated_duration_min: number;
   finisher_type: FinisherType;
+  is_adaptive_cooldown?: boolean;
+  default_cooldown_activity?: CooldownActivity;
 }
 
 // --- Workout Blocks ---
 
-export type BlockType = 'warmup' | 'strength' | 'skill' | 'wod' | 'finisher';
+export type BlockType = 'warmup' | 'strength' | 'skill' | 'wod' | 'finisher' | 'cooldown';
 export type WodFormat = 'amrap' | 'emom' | 'for_time' | 'tabata';
 
 export interface WorkoutBlock {
@@ -91,6 +94,7 @@ export interface WorkoutBlock {
 export interface BlockExercise {
   id: string;
   block_id: string;
+  exercise_id?: string; // optional FK to exercises reference table
   exercise_name: string;
   sets?: number;
   reps?: number | string; // "max" or number
@@ -98,6 +102,39 @@ export interface BlockExercise {
   rest_seconds?: number;
   order_index: number;
   notes?: string;
+}
+
+// --- Exercises Reference ---
+
+export type ExerciseCategory = 'monostructural' | 'weightlifting' | 'gymnastics' | 'odd_object' | 'accessory';
+export type ScoringUnit = 'reps' | 'time_s' | 'distance_m' | 'calories' | 'weight_kg';
+
+export interface Exercise {
+  id: string;
+  slug: string;
+  name: string;
+  category: ExerciseCategory;
+  subcategory: string;
+  equipment: string[];
+  modules: TrainingModule[];
+  is_unilateral: boolean;
+  is_bodyweight: boolean;
+  scoring_unit?: ScoringUnit;
+  notes?: string;
+  created_at: string;
+}
+
+// --- Weekly Fatigue Snapshots (feeds adaptive cooldown) ---
+
+export interface WeeklyFatigueSnapshot {
+  user_id: string;
+  iso_year: number;
+  iso_week: number;
+  avg_fatigue_score: number;
+  avg_performance_score: number;
+  sessions_completed: number;
+  suggested_cooldown: CooldownActivity;
+  computed_at: string;
 }
 
 // --- Workout Logs ---

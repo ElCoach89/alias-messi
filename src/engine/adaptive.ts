@@ -11,6 +11,8 @@ import {
   AdaptiveAdjustment,
   UserClassification,
   WorkoutLog,
+  CooldownActivity,
+  WeeklyFatigueSnapshot,
 } from '../types';
 
 // --- Score Computation ---
@@ -232,4 +234,77 @@ export function computeSuggestedWeight(
 ): number {
   const base = oneRepMax * (targetPercentage / 100);
   return adjustWeight(base, adaptiveModifier);
+}
+
+// --- Adaptive Cooldown (Hybride program — day 7) -------------
+
+const COOLDOWN_MESSAGES: Record<CooldownActivity, string> = {
+  rest_complete: 'Ton corps te demande une vraie pause. Repos complet aujourd’hui.',
+  walk: 'Marche tranquille 30 min pour drainer. Le cœur respire.',
+  swim: 'Nage douce : joints protégés, circulation relancée.',
+  boxe: 'Boxe légère ou shadow boxing pour bouger sans charge.',
+  run: 'Footing Z2 de récupération — très léger, conversationnel.',
+};
+
+/**
+ * Pick the cooldown activity for the 7th day of the Hybride week.
+ * Higher fatigue → lower intensity / full rest. Lower fatigue + good
+ * performance → light run or boxe to maintain engine.
+ */
+export function suggestCooldownActivity(scores: AdaptiveScores): {
+  activity: CooldownActivity;
+  message: string;
+} {
+  let activity: CooldownActivity;
+
+  switch (scores.classification) {
+    case 'struggling':
+      activity = 'rest_complete';
+      break;
+    case 'fatigued':
+      activity = 'walk';
+      break;
+    case 'stable':
+      // Lower fatigue within "stable" → allow swim; otherwise walk
+      activity = scores.fatigue_score < 18 ? 'swim' : 'walk';
+      break;
+    case 'performer':
+      // High performers can do a light run; alternate with boxe for variety
+      activity = scores.performance_score >= 32 ? 'run' : 'boxe';
+      break;
+  }
+
+  return { activity, message: COOLDOWN_MESSAGES[activity] };
+}
+
+/**
+ * Roll up the last 7 days of feedback into a weekly snapshot that
+ * feeds the adaptive cooldown decision and is persisted in
+ * `weekly_fatigue_snapshots` for history/analytics.
+ */
+export function computeWeeklyFatigueSnapshot(
+  userId: string,
+  isoYear: number,
+  isoWeek: number,
+  feedbacks: SessionFeedback[],
+  completedLogs: WorkoutLog[],
+): WeeklyFatigueSnapshot {
+  const scores = computeAdaptiveScores({
+    feedbacks,
+    workoutLogs: completedLogs,
+    totalSessionsInPeriod: Math.max(completedLogs.length, 1),
+  });
+
+  const { activity } = suggestCooldownActivity(scores);
+
+  return {
+    user_id: userId,
+    iso_year: isoYear,
+    iso_week: isoWeek,
+    avg_fatigue_score: scores.fatigue_score,
+    avg_performance_score: scores.performance_score,
+    sessions_completed: completedLogs.filter((l) => l.status === 'completed').length,
+    suggested_cooldown: activity,
+    computed_at: new Date().toISOString(),
+  };
 }
